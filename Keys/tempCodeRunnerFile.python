@@ -1,34 +1,55 @@
 import pygame
 
 pygame.init()
-screen=pygame.display.set_mode((500,500))
-screen.fill((255,255,255))
-colors={'Blue': pygame.color('Blue'),'Red': pygame.color('Red'), 'Yellow': pygame.color('Yellow') }
-done=False
-is_blue=True
+screen = pygame.display.set_mode((500, 500))
+screen.fill((255, 255, 255))
 
-x=60
-y=60
+colors = {'Blue': pygame.Color('Blue'), 'Red': pygame.Color('Red'), 'Yellow': pygame.Color('Yellow')}
+done = False
+color_key = 'Blue'  
+
+x, y = 60, 60
+sprite_width, sprite_height = 60, 60
+screen_width, screen_height = 500, 500
 
 while not done:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            done=True
-        if event.type==pygame.KEYDOWN or event.type==pygame.K_SPACE:
-            is_blue=not is_blue
+            done = True
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:  # Check for space key to toggle color
+                # Toggle between Blue, Red, and Yellow
+                if color_key == 'Blue':
+                    color_key = 'Red'
+                elif color_key == 'Red':
+                    color_key = 'Yellow'
+                else:
+                    color_key = 'Blue'
 
-    pressed=pygame.key.get_pressed()
-    if pressed[pygame.K_UP]:y+=3
-    if pressed[pygame.K_DOWN]:y-=3
-    if pressed[pygame.K_LEFT]:x-=3
-    if pressed[pygame.K_RIGHT]:x-=3
+    pressed = pygame.key.get_pressed()
+    if pressed[pygame.K_UP]:
+        y -= 3
+    if pressed[pygame.K_DOWN]:
+        y += 3
+    if pressed[pygame.K_LEFT]:
+        x -= 3
+    if pressed[pygame.K_RIGHT]:
+        x += 3
 
-    if is_blue:
-        color=(0,128,225)
-    else:
-        color=(255,255,255)
-    pygame.draw.rect(screen,color, pygame.Rect(x,y,60,60))
-pygame.display.flip()
+    # Keep the rectangle within screen bounds
+    x = max(0, min(x, screen_width - sprite_width))
+    y = max(0, min(y, screen_height - sprite_height))
 
+    # Clear the screen
+    screen.fill((255, 255, 255))
 
+    # Set color based on dictionary and current color_key
+    color = colors[color_key]
 
+    # Draw the rectangle with the current color
+    pygame.draw.rect(screen, color, pygame.Rect(x, y, sprite_width, sprite_height))
+
+    # Update the display
+    pygame.display.flip()
+
+pygame.quit()
